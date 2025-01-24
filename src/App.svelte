@@ -59,9 +59,9 @@
     if (nano < 0.000001) {
       return `${(nano * 1e6).toFixed(4)}µ`;
     } else if (nano >= 1_000_000) {
-      return `${(nano / 1_000_000).toFixed(2)}M`;
+      return `${(nano / 1_000_000).toFixed(4)}M`;
     } else if (nano >= 1000) {
-      return `${(nano / 1000).toFixed(2)}k`;
+      return `${(nano / 1000).toFixed(4)}k`;
     } else {
       return nano.toFixed(4);
     }
@@ -212,6 +212,12 @@
 
   tr:hover {
     background: #f8f9fa;
+  }
+
+  td.range, th.range {
+    font-family: monospace; /* Ensure numbers align properly */
+    text-align: right; /* Align numeric values to the right */
+    white-space: nowrap; /* Prevent wrapping of long numbers */
   }
 
   .bucket-row {
@@ -437,7 +443,15 @@
     </div>
 
     <div class="cost-panel">
-      <h3>Storage Costs</h3>
+      <h3>
+    <span class="tooltip-trigger">
+      Storage Costs
+      <span class="info-icon">?</span>
+      <span class="tooltip">
+        Assuming $0.005/GB/Month
+      </span>
+    </span>
+      </h3>
       <div class="cost-grid">
         <div class="cost-item">
           <div class="cost-value">${cost1Year.toFixed(2)}</div>
@@ -464,6 +478,7 @@
         </div>
       </div>
     </div>
+
   </div>
 
   <div class="right-column">
@@ -473,7 +488,8 @@
           <thead>
           <tr>
             <th>Bucket</th>
-            <th>Range</th>
+            <th class="range">Min Ӿ</th>
+            <th class="range">Max Ӿ</th>
             <th>Accounts</th>
             <th>Investment</th>
           </tr>
@@ -485,7 +501,8 @@
                     on:click={(e) => handleBucketClick(i, e)}
             >
               <td>{bucket.index}</td>
-              <td>{formatNano(bucket.minNano)} → {formatNano(bucket.maxNano)} Ӿ</td>
+              <td class="range">{formatNano(bucket.minNano)}</td>
+              <td class="range">{formatNano(bucket.maxNano)}</td>
               <td>
                 {bucket.toggled ? Math.ceil(accountsPerBucket).toLocaleString() : '—'}
               </td>
