@@ -59,11 +59,11 @@
     if (nano < 0.000001) {
       return `${(nano * 1e6).toFixed(4)}µ`;
     } else if (nano >= 1_000_000) {
-      return `${(nano / 1_000_000).toFixed(4)}M`;
+      return `${(nano / 1_000_000).toFixed(2)}M`;
     } else if (nano >= 1000) {
-      return `${(nano / 1000).toFixed(4)}k`;
+      return `${(nano / 1000).toFixed(2)}k`;
     } else {
-      return nano.toFixed(4);
+      return nano.toFixed(3);
     }
   }
 
