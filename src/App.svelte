@@ -422,42 +422,62 @@
 
       <div class="slider-group">
         <label for="total-cps-slider" class="slider-label">
-          <span class="tooltip-trigger">
-            Network CPS: {totalCPS}
-            <span class="info-icon">?</span>
-            <span class="tooltip">
-              The transaction confirmations/second capacity of the network
-            </span>
-          </span>
+    <span class="tooltip-trigger">
+      Network CPS: {totalCPS}
+      <span class="info-icon">?</span>
+      <span class="tooltip">
+        The transaction confirmations/second capacity of the network
+      </span>
+    </span>
         </label>
-        <input
-                id="total-cps-slider"
-                type="range"
-                min="1"
-                max="1000"
-                bind:value={totalCPS}
-        />
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <input
+                  id="total-cps-slider"
+                  type="range"
+                  min="1"
+                  max="1000"
+                  bind:value={totalCPS}
+          />
+          <input
+                  type="number"
+                  min="1"
+                  max="1000"
+                  bind:value={totalCPS}
+                  style="width: 80px;"
+          />
+        </div>
       </div>
+
 
       <div class="slider-group">
         <label for="cooldown-slider" class="slider-label">
-          <span class="tooltip-trigger">
-            Cooldown Period: {formattedCooldown}
-            <span class="info-icon">?</span>
-            <span class="tooltip">
-              The minimum wait period between subsequent transactions caused by the attack for all accounts in the selected buckets
-            </span>
-          </span>
+    <span class="tooltip-trigger">
+      Cooldown Period: {formattedCooldown}
+      <span class="info-icon">?</span>
+      <span class="tooltip">
+        The minimum wait period between subsequent transactions caused by the attack for all accounts in the selected buckets
+      </span>
+    </span>
         </label>
-        <input
-                id="cooldown-slider"
-                type="range"
-                min="1"
-                max="3600"
-                step="1"
-                bind:value={cooldownSecs}
-        />
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <input
+                  id="cooldown-slider"
+                  type="range"
+                  min="1"
+                  max="3600"
+                  step="1"
+                  bind:value={cooldownSecs}
+          />
+          <input
+                  type="number"
+                  min="1"
+                  max="3600"
+                  bind:value={cooldownSecs}
+                  style="width: 80px;"
+          />
+        </div>
       </div>
+
 
       <div class="slider-group">
         <label for="hardware-slider" class="slider-label">
