@@ -56,7 +56,9 @@
   let lastToggledIndex = -1;
 
   function formatNano(nano: number): string {
-    if (nano < 0.000001) {
+    if (nano === 0) {
+      return nano.toString();
+    } else if (nano < 0.000001) {
       return `${(nano * 1e6).toFixed(4)}µ`;
     } else if (nano >= 1_000_000) {
       return `${(nano / 1_000_000).toFixed(2)}M`;
@@ -77,6 +79,20 @@
     }
   }
 
+  function formatCooldown(seconds: number): string {
+    if (seconds < 60) {
+      return `${seconds}s`; // Seconds
+    } else if (seconds < 3600) {
+      const minutes = Math.floor(seconds / 60);
+      const remainingSeconds = seconds % 60;
+      return `${minutes}m ${remainingSeconds}s`; // Minutes and seconds
+    } else {
+      const hours = Math.floor(seconds / 3600);
+      const remainingMinutes = Math.floor((seconds % 3600) / 60);
+      return `${hours}h ${remainingMinutes}m`; // Hours and minutes
+    }
+  }
+
   function handleBucketClick(index: number, event: MouseEvent): void {
     if (event.shiftKey && lastToggledIndex !== -1) {
       const start = Math.min(lastToggledIndex, index);
@@ -93,6 +109,8 @@
       buckets = [...buckets];
     }
   }
+
+  $: formattedCooldown = formatCooldown(cooldownSecs);
 
   $: selectedBuckets = buckets.filter((b) => b.toggled);
   $: accountsPerBucket = selectedBuckets.length
@@ -133,18 +151,15 @@
 <style>
   .calculator {
     max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem;
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: 1rem;
-    align-items: stretch; /* Ensures both columns stretch to equal height */
+    grid-template-columns: 300px 400px;
+    gap: 0.5rem;
   }
 
   .left-column, .right-column {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 0.5rem;
     height: 100%;
   }
 
@@ -185,6 +200,7 @@
   .table-container {
     overflow-y: auto;
     flex: 1;
+    overflow-x: hidden;
   }
 
   table {
@@ -381,7 +397,6 @@
       <div class="info-panel">
         <h3>Nano Spammer Calculator</h3>
         <p>This calculator is for exploring the affects of different network parameters on a spammers ability to stall transactions and bloat the ledger.</p>
-        <p>We assume that PoW is non-existent, as that is the future plan for Nano.</p>
 
         <div class="tip">
           <strong>Tip:</strong> Use shift-click to select multiple buckets at once.
@@ -410,7 +425,7 @@
       <div class="slider-group">
         <label for="cooldown-slider" class="slider-label">
     <span class="tooltip-trigger">
-      Cooldown Period: {cooldownSecs}s
+      Cooldown Period: {formattedCooldown}
       <span class="info-icon">?</span>
       <span class="tooltip">
         The minimum wait period between transactions inflicted by the attack for all accounts in the selected buckets
