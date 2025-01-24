@@ -162,6 +162,9 @@
   $: powCostPerDay = (totalCPS / hardware.txPerSec) * ((hardware.power / 1000) * electricityCostPerKWh * 24);
   $: numHardware = Math.ceil(totalCPS / hardware.txPerSec);
   $: upfrontHardwareCost = numHardware * hardware.cost;
+
+  let editingCPS = false;
+  let editingCooldown = false;
 </script>
 
 <style>
@@ -423,59 +426,79 @@
       <div class="slider-group">
         <label for="total-cps-slider" class="slider-label">
     <span class="tooltip-trigger">
-      Network CPS: {totalCPS}
+      Network CPS:
+      <span
+              on:click={() => editingCPS = true}
+              style="cursor: pointer; display: inline-block;">
+        {#if editingCPS}
+          <input
+                  type="number"
+                  min="1"
+                  max="1000"
+                  bind:value={totalCPS}
+                  on:blur={() => editingCPS = false}
+                  on:keydown={(e) => e.key === 'Enter' && (editingCPS = false)}
+                  style="width: 80px; text-align: center;"
+                  autofocus
+          />
+        {:else}
+          {totalCPS}
+        {/if}
+      </span>
       <span class="info-icon">?</span>
       <span class="tooltip">
         The transaction confirmations/second capacity of the network
       </span>
     </span>
         </label>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <input
-                  id="total-cps-slider"
-                  type="range"
-                  min="1"
-                  max="1000"
-                  bind:value={totalCPS}
-          />
-          <input
-                  type="number"
-                  min="1"
-                  max="1000"
-                  bind:value={totalCPS}
-                  style="width: 80px;"
-          />
-        </div>
+        <input
+                id="total-cps-slider"
+                type="range"
+                min="1"
+                max="1000"
+                bind:value={totalCPS}
+        />
       </div>
+
 
 
       <div class="slider-group">
         <label for="cooldown-slider" class="slider-label">
     <span class="tooltip-trigger">
-      Cooldown Period: {formattedCooldown}
+      Cooldown Period:
+      <span
+              on:click={() => editingCooldown = true}
+              style="cursor: pointer; display: inline-block;">
+        {#if editingCooldown}
+          <input
+                  type="number"
+                  min="1"
+                  max="3600"
+                  step="1"
+                  bind:value={cooldownSecs}
+                  on:blur={() => editingCooldown = false}
+                  on:keydown={(e) => e.key === 'Enter' && (editingCooldown = false)}
+                  style="width: 80px; text-align: center;"
+                  autofocus
+          />
+        {:else}
+          {formattedCooldown}
+        {/if}
+      </span>
       <span class="info-icon">?</span>
       <span class="tooltip">
         The minimum wait period between subsequent transactions caused by the attack for all accounts in the selected buckets
       </span>
     </span>
         </label>
-        <div style="display: flex; align-items: center; gap: 0.5rem;">
-          <input
-                  id="cooldown-slider"
-                  type="range"
-                  min="1"
-                  max="3600"
-                  step="1"
-                  bind:value={cooldownSecs}
-          />
-          <input
-                  type="number"
-                  min="1"
-                  max="3600"
-                  bind:value={cooldownSecs}
-                  style="width: 80px;"
-          />
-        </div>
+        <input
+                id="cooldown-slider"
+                type="range"
+                min="1"
+                max="3600"
+                step="1"
+                bind:value={cooldownSecs}
+        />
       </div>
 
 
