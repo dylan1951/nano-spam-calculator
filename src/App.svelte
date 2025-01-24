@@ -55,6 +55,17 @@
   let cooldownSecs = 10;
   let lastToggledIndex = -1;
 
+  const hardwareOptions = [
+    { name: "GTX 1080", cost: 115, power: 150, txPerSec: 3.32 },
+    { name: "RTX 2080 Ti", cost: 350, power: 250, txPerSec: 5.48 },
+    { name: "Tesla V100", cost: 700, power: 300, txPerSec: 7.25 },
+    { name: "Tesla P100", cost: 350, power: 140, txPerSec: 3.63 },
+    { name: "200W ASIC (theoretical)", cost: 500, power: 200, txPerSec: 1200 },
+  ];
+
+  let selectedHardwareIndex = 0; // Default hardware selection
+  const electricityCostPerKWh = 0.14;
+
   function formatNano(nano: number): string {
     if (nano === 0) {
       return nano.toString();
@@ -81,15 +92,15 @@
 
   function formatCooldown(seconds: number): string {
     if (seconds < 60) {
-      return `${seconds}s`; // Seconds
+      return `${seconds}s`;
     } else if (seconds < 3600) {
       const minutes = Math.floor(seconds / 60);
       const remainingSeconds = seconds % 60;
-      return `${minutes}m ${remainingSeconds}s`; // Minutes and seconds
+      return `${minutes}m ${remainingSeconds}s`;
     } else {
       const hours = Math.floor(seconds / 3600);
       const remainingMinutes = Math.floor((seconds % 3600) / 60);
-      return `${hours}h ${remainingMinutes}m`; // Hours and minutes
+      return `${hours}h ${remainingMinutes}m`;
     }
   }
 
@@ -146,6 +157,11 @@
   $: cost1Year = calculateCumulativeCost(gbPerDay, 12);
   $: cost2Years = calculateCumulativeCost(gbPerDay, 24);
   $: cost5Years = calculateCumulativeCost(gbPerDay, 60);
+
+  $: hardware = hardwareOptions[selectedHardwareIndex];
+  $: powCostPerDay = (totalCPS / hardware.txPerSec) * ((hardware.power / 1000) * electricityCostPerKWh * 24);
+  $: numHardware = Math.ceil(totalCPS / hardware.txPerSec);
+  $: upfrontHardwareCost = numHardware * hardware.cost;
 </script>
 
 <style>
@@ -371,6 +387,7 @@
     left: 0;
     margin-top: 0.5rem;
     font-size: 0.85rem;
+    font-weight: normal;
     color: #495057;
     background: #ffffff;
     padding: 0.5rem;
@@ -405,13 +422,13 @@
 
       <div class="slider-group">
         <label for="total-cps-slider" class="slider-label">
-    <span class="tooltip-trigger">
-      Network CPS: {totalCPS}
-      <span class="info-icon">?</span>
-      <span class="tooltip">
-        The transaction confirmations/second capacity of the network
-      </span>
-    </span>
+          <span class="tooltip-trigger">
+            Network CPS: {totalCPS}
+            <span class="info-icon">?</span>
+            <span class="tooltip">
+              The transaction confirmations/second capacity of the network
+            </span>
+          </span>
         </label>
         <input
                 id="total-cps-slider"
@@ -424,13 +441,13 @@
 
       <div class="slider-group">
         <label for="cooldown-slider" class="slider-label">
-    <span class="tooltip-trigger">
-      Cooldown Period: {formattedCooldown}
-      <span class="info-icon">?</span>
-      <span class="tooltip">
-        The minimum wait period between transactions inflicted by the attack for all accounts in the selected buckets
-      </span>
-    </span>
+          <span class="tooltip-trigger">
+            Cooldown Period: {formattedCooldown}
+            <span class="info-icon">?</span>
+            <span class="tooltip">
+              The minimum wait period between subsequent transactions caused by the attack for all accounts in the selected buckets
+            </span>
+          </span>
         </label>
         <input
                 id="cooldown-slider"
@@ -442,30 +459,37 @@
         />
       </div>
 
-    </div>
-
-    <div class="stats-panel">
-      <div class="stats-grid">
-        <div class="stat-item">
-          <div class="stat-value">{selectedBuckets.length}</div>
-          <div class="stat-label">Selected</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">{formatNano(totalInvestment)} Ӿ</div>
-          <div class="stat-label">Investment</div>
-        </div>
+      <div class="slider-group">
+        <label for="hardware-slider" class="slider-label">
+          <span class="tooltip-trigger">
+            {numHardware} x {hardware.name}
+            <span class="info-icon">?</span>
+            <span class="tooltip">
+              Some hardware is more efficient than others.
+            </span>
+          </span>
+        </label>
+        <input
+                id="hardware-slider"
+                type="range"
+                min="0"
+                max={hardwareOptions.length - 1}
+                step="1"
+                bind:value={selectedHardwareIndex}
+        />
       </div>
+
     </div>
 
     <div class="cost-panel">
       <h3>
-    <span class="tooltip-trigger">
-      Storage Costs
-      <span class="info-icon">?</span>
-      <span class="tooltip">
-        Assuming $0.005/GB/Month
-      </span>
+  <span class="tooltip-trigger">
+    Storage Costs
+    <span class="info-icon">?</span>
+    <span class="tooltip">
+      This represents the cost of storing data generated by the spam attack. Assumes $0.005/GB/month.
     </span>
+  </span>
       </h3>
       <div class="cost-grid">
         <div class="cost-item">
@@ -497,6 +521,23 @@
   </div>
 
   <div class="right-column">
+    <div class="stats-panel">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value">${powCostPerDay.toFixed(2)}</div>
+          <div class="stat-label">Energy Cost Per Day</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">${formatNumber(upfrontHardwareCost)}</div>
+          <div class="stat-label">Upfront Hardware Cost</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value">{formatNano(totalInvestment)} Ӿ</div>
+          <div class="stat-label">Investment to Fill Buckets</div>
+        </div>
+      </div>
+    </div>
+
     <div class="buckets-table">
       <div class="table-container">
         <table>
