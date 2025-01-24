@@ -138,7 +138,7 @@
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 1rem;
-    min-height: 100vh;
+    align-items: stretch; /* Ensures both columns stretch to equal height */
   }
 
   .left-column, .right-column {
@@ -179,11 +179,12 @@
     height: 500px;
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
 
   .table-container {
     overflow-y: auto;
-    flex-grow: 1;
+    flex: 1;
   }
 
   table {
@@ -293,14 +294,103 @@
     margin: 0.5rem 0;
     font-size: 1rem;
   }
+
+  .info-panel {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .info-panel h3 {
+    font-size: 1.1rem;
+    margin: 0 0 0.75rem 0;
+    color: #343a40;
+  }
+
+  .info-panel p {
+    font-size: 0.85rem;
+    margin: 0 0 0.5rem 0;
+    color: #6c757d;
+    line-height: 1.4;
+  }
+
+  .tip {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    background: #e9ecef;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: #495057;
+  }
+
+  .tooltip-trigger {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .info-icon {
+    cursor: help;
+    color: #6c757d;
+    font-size: 0.8rem;
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+  }
+
+  .tooltip {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #495057;
+    background: #ffffff;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    z-index: 1000;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+    pointer-events: none;
+  }
+
+  .tooltip-trigger:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
 </style>
 
 <div class="calculator">
   <div class="left-column">
     <div class="controls">
+      <div class="info-panel">
+        <h3>Nano Spammer Calculator</h3>
+        <p>This calculator is for exploring the affects of different network parameters on a spammers ability to stall transactions and bloat the ledger.</p>
+        <p>We assume that PoW is non-existent, as that is the future plan for Nano.</p>
+
+        <div class="tip">
+          <strong>Tip:</strong> Use shift-click to select multiple buckets at once.
+        </div>
+      </div>
+
       <div class="slider-group">
         <label for="total-cps-slider" class="slider-label">
-          Network CPS: {totalCPS}
+    <span class="tooltip-trigger">
+      Network CPS: {totalCPS}
+      <span class="info-icon">?</span>
+      <span class="tooltip">
+        The transaction confirmations/second capacity of the network
+      </span>
+    </span>
         </label>
         <input
                 id="total-cps-slider"
@@ -313,7 +403,13 @@
 
       <div class="slider-group">
         <label for="cooldown-slider" class="slider-label">
-          Cooldown Period: {cooldownSecs}s
+    <span class="tooltip-trigger">
+      Cooldown Period: {cooldownSecs}s
+      <span class="info-icon">?</span>
+      <span class="tooltip">
+        The minimum wait period between transactions inflicted by the attack for all accounts in the selected buckets
+      </span>
+    </span>
         </label>
         <input
                 id="cooldown-slider"
@@ -324,6 +420,7 @@
                 bind:value={cooldownSecs}
         />
       </div>
+
     </div>
 
     <div class="stats-panel">
