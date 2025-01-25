@@ -210,9 +210,12 @@
     .left-column, .right-column {
         display: flex;
         flex-direction: column;
-        overflow: hidden;
         height: 100%;
         gap: 0.5rem;
+    }
+
+    .right-column {
+        overflow: hidden;
     }
 
     .buckets-table {
@@ -414,22 +417,21 @@
     .tooltip {
         position: absolute;
         top: 100%;
-        left: 0;
+        left: 50%;
         margin-top: 0.5rem;
+        background: #fff;
+        color: #495057;
+        padding: 0.5rem;
         font-size: 0.85rem;
         font-weight: normal;
-        color: #495057;
-        background: #ffffff;
-        padding: 0.5rem;
-        border-radius: 6px;
         border: 1px solid #dee2e6;
+        border-radius: 4px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        width: 200px;
-        z-index: 1000;
-        visibility: hidden;
         opacity: 0;
+        visibility: hidden;
+        z-index: 1000;
         transition: opacity 0.2s, visibility 0.2s;
-        pointer-events: none;
+        width: 150px;
     }
 
     .tooltip-trigger:hover .tooltip {
@@ -481,25 +483,6 @@
         display: flex;
         align-items: center;
         justify-content: center;
-    }
-
-    .tooltip {
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        transform: translateX(-50%);
-        margin-top: 0.5rem;
-        background: #fff;
-        color: #495057;
-        padding: 0.5rem;
-        font-size: 0.85rem;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        white-space: nowrap;
-        opacity: 0;
-        visibility: hidden;
-        transition: opacity 0.2s, visibility 0.2s;
     }
 
     .tooltip-trigger:hover .tooltip {
