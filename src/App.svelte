@@ -202,7 +202,7 @@
 <style>
     .calculator {
         display: grid;
-        grid-template-columns: 300px 400px;
+        grid-template-columns: 300px 410px;
         gap: 0.5rem;
         height: 680px;
     }
