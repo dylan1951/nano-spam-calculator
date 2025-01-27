@@ -200,11 +200,22 @@
 </script>
 
 <style>
-    .calculator {
-        display: grid;
-        grid-template-columns: 300px 410px;
-        gap: 0.5rem;
-        height: 680px;
+    /* Mobile */
+    body {
+      .calculator {
+          display: flex;
+          flex-direction: column;
+      }
+    }
+
+    /* Tablet, desktop */
+    @media (min-width: 768px) {
+      .calculator {
+          display: grid;
+          grid-template-columns: repeat(2, minmax(0, 0.5fr));
+          gap: 0.5rem;
+          height: 75vh;
+      }
     }
 
     .left-column, .right-column {
