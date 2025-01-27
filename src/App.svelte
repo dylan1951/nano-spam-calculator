@@ -201,11 +201,10 @@
 
 <style>
     /* Mobile */
-    body {
-      .calculator {
-          display: flex;
-          flex-direction: column;
-      }
+    .calculator {
+        display: flex;
+        flex-direction: column;
+        row-gap: 0.5rem;
     }
 
     /* Tablet, desktop */
